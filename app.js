@@ -51,7 +51,7 @@ function showTodayReminder() {
   const count = getTodaySubmitCount();
 
   if (count >= 1) {
-    helperBox.textContent = `今天已经记录过 ${count} 次啦，心情有变化，爸爸都会收到哦！`;
+    helperBox.textContent = `今天已经记录过啦，心情有变化，都要告诉爸爸哦！`;
   } else {
     helperBox.textContent = "你不需要写得很完整，只要把今天的感觉留下来就已经很好了。";
   }
@@ -77,7 +77,7 @@ form.addEventListener("submit", async (e) => {
 
   if (todayCount >= 1) {
     const confirmed = window.confirm(
-      `今天已经记录过 ${todayCount} 次啦。\n宝贝看来今天有很多故事呢，还想继续跟我说吗？`
+      `今天已经记录过啦。\n宝贝看来今天有很多故事呢，还想继续跟我说吗？`
     );
 
     if (!confirmed) {
