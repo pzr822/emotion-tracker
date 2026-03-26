@@ -14,6 +14,43 @@ const somaticPresentSelect = document.getElementById("somatic_present");
 const somaticNoteField = document.getElementById("somaticNoteField");
 const somaticNote = document.getElementById("somatic_note");
 
+const LAST_SUBMIT_DATE_KEY = "emotion_tracker_last_submit_date";
+const TODAY_SUBMIT_COUNT_KEY = "emotion_tracker_today_submit_count";
+
+function getTodayString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getTodaySubmitCount() {
+  const today = getTodayString();
+  const savedDate = localStorage.getItem(LAST_SUBMIT_DATE_KEY);
+  const savedCount = Number(localStorage.getItem(TODAY_SUBMIT_COUNT_KEY) || "0");
+
+  if (savedDate !== today) {
+    return 0;
+  }
+
+  return savedCount;
+}
+
+function increaseTodaySubmitCount() {
+  const today = getTodayString();
+  const savedDate = localStorage.getItem(LAST_SUBMIT_DATE_KEY);
+  const savedCount = Number(localStorage.getItem(TODAY_SUBMIT_COUNT_KEY) || "0");
+
+  if (savedDate !== today) {
+    localStorage.setItem(LAST_SUBMIT_DATE_KEY, today);
+    localStorage.setItem(TODAY_SUBMIT_COUNT_KEY, "1");
+    return;
+  }
+
+  localStorage.setItem(TODAY_SUBMIT_COUNT_KEY, String(savedCount + 1));
+}
+
 function updateSomaticField() {
   if (somaticPresentSelect.value === "没有") {
     somaticNoteField.classList.add("hidden");
@@ -28,6 +65,18 @@ updateSomaticField();
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  const todayCount = getTodaySubmitCount();
+
+  if (todayCount >= 1) {
+    const confirmed = window.confirm(
+      "今天已经记录过一次啦。\n宝贝内心真丰富！还需要继续提交吗？"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+  }
 
   successMessage.classList.add("hidden");
   errorMessage.classList.add("hidden");
@@ -55,6 +104,8 @@ form.addEventListener("submit", async (e) => {
     submitBtn.textContent = "提交今天的记录";
     return;
   }
+
+  increaseTodaySubmitCount();
 
   form.reset();
   updateSomaticField();
