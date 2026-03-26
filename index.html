@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>今天的心情记录</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <div class="header">
+        <h1>今天的心情记录</h1>
+        <p class="subtitle" id="subtitle">
+          慢慢来，把今天的感受留在这里就好。
+        </p>
+      </div>
+
+      <div class="hero">
+        <img id="heroImage" src="assets/start.png" alt="温柔插图" />
+      </div>
+
+      <form id="moodForm" class="form">
+        <div class="field">
+          <label for="mood_score">今天的心情评分</label>
+          <select id="mood_score" required>
+            <option value="">请选择 1-5 分</option>
+            <option value="1">1 分</option>
+            <option value="2">2 分</option>
+            <option value="3">3 分</option>
+            <option value="4">4 分</option>
+            <option value="5">5 分</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="sleep_score">昨晚睡眠评分</label>
+          <select id="sleep_score" required>
+            <option value="">请选择 1-5 分</option>
+            <option value="1">1 分</option>
+            <option value="2">2 分</option>
+            <option value="3">3 分</option>
+            <option value="4">4 分</option>
+            <option value="5">5 分</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="anxiety_score">焦虑评分</label>
+          <select id="anxiety_score" required>
+            <option value="">请选择 1-5 分</option>
+            <option value="1">1 分</option>
+            <option value="2">2 分</option>
+            <option value="3">3 分</option>
+            <option value="4">4 分</option>
+            <option value="5">5 分</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="depression_score">抑郁情绪评分</label>
+          <select id="depression_score" required>
+            <option value="">请选择 1-5 分</option>
+            <option value="1">1 分</option>
+            <option value="2">2 分</option>
+            <option value="3">3 分</option>
+            <option value="4">4 分</option>
+            <option value="5">5 分</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="somatic_present">今天有没有躯体化</label>
+          <select id="somatic_present" required>
+            <option value="">请选择</option>
+            <option value="有">有</option>
+            <option value="没有">没有</option>
+          </select>
+        </div>
+
+        <div class="field" id="somaticNoteField">
+          <label for="somatic_note">躯体化症状备注</label>
+          <textarea
+            id="somatic_note"
+            rows="4"
+            placeholder="例如：胸闷、头痛、胃不舒服、心跳快……"
+          ></textarea>
+        </div>
+
+        <div class="field">
+          <label for="note">今天还想补充的话</label>
+          <textarea
+            id="note"
+            rows="4"
+            placeholder="可以写一点今天发生的事，也可以什么都不写。"
+          ></textarea>
+        </div>
+
+        <div class="helper-box" id="helperBox">
+          你不需要写得很完整，只要把今天的感觉留下来就已经很好了。
+        </div>
+
+        <button type="submit" id="submitBtn">提交今天的记录</button>
+      </form>
+
+      <div id="successMessage" class="message success hidden">
+        已经认真收下啦。谢谢你愿意记录今天的感受。
+      </div>
+
+      <div id="errorMessage" class="message error hidden">
+        提交失败了，请稍后再试一次。
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
