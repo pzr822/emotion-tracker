@@ -19,10 +19,7 @@ const TODAY_SUBMIT_COUNT_KEY = "emotion_tracker_today_submit_count";
 
 function getTodayString() {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 }
 
 function getTodaySubmitCount() {
@@ -45,10 +42,19 @@ function increaseTodaySubmitCount() {
   if (savedDate !== today) {
     localStorage.setItem(LAST_SUBMIT_DATE_KEY, today);
     localStorage.setItem(TODAY_SUBMIT_COUNT_KEY, "1");
-    return;
+  } else {
+    localStorage.setItem(TODAY_SUBMIT_COUNT_KEY, String(savedCount + 1));
   }
+}
 
-  localStorage.setItem(TODAY_SUBMIT_COUNT_KEY, String(savedCount + 1));
+function showTodayReminder() {
+  const count = getTodaySubmitCount();
+
+  if (count >= 1) {
+    helperBox.textContent = `今天已经记录过 ${count} 次啦，心情有变化，爸爸都会收到哦！`;
+  } else {
+    helperBox.textContent = "你不需要写得很完整，只要把今天的感觉留下来就已经很好了。";
+  }
 }
 
 function updateSomaticField() {
@@ -62,6 +68,7 @@ function updateSomaticField() {
 
 somaticPresentSelect.addEventListener("change", updateSomaticField);
 updateSomaticField();
+showTodayReminder();
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -70,7 +77,7 @@ form.addEventListener("submit", async (e) => {
 
   if (todayCount >= 1) {
     const confirmed = window.confirm(
-      "今天已经记录过一次啦。\n宝贝内心真丰富！还需要继续提交吗？"
+      `今天已经记录过 ${todayCount} 次啦。\n宝贝看来今天有很多故事呢，还想继续跟我说吗？`
     );
 
     if (!confirmed) {
@@ -109,12 +116,12 @@ form.addEventListener("submit", async (e) => {
 
   form.reset();
   updateSomaticField();
+  showTodayReminder();
 
   heroImage.src = "assets/success.png";
-  subtitle.textContent = "已经认真收下啦，今天宝贝也是棒棒的哦！";
-  helperBox.textContent = "这份记录已经好好保存下来了。";
-
+  subtitle.textContent = "宝贝今天也很努力呢！爸爸永远在你身边~";
   successMessage.classList.remove("hidden");
+
   submitBtn.disabled = false;
   submitBtn.textContent = "提交今天的记录";
 });
