@@ -111,7 +111,7 @@ form.addEventListener("submit", async (e) => {
   updateSomaticField();
 
   heroImage.src = "assets/success.png";
-  subtitle.textContent = "已经认真收下啦，今天也辛苦你了。";
+  subtitle.textContent = "已经认真收下啦，今天宝贝也是棒棒的哦！";
   helperBox.textContent = "这份记录已经好好保存下来了。";
 
   successMessage.classList.remove("hidden");
