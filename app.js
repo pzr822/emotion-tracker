@@ -40,10 +40,7 @@ function getTodaySubmitCount() {
   const savedDate = localStorage.getItem(LAST_SUBMIT_DATE_KEY);
   const savedCount = Number(localStorage.getItem(TODAY_SUBMIT_COUNT_KEY) || "0");
 
-  if (savedDate !== today) {
-    return 0;
-  }
-
+  if (savedDate !== today) return 0;
   return savedCount;
 }
 
@@ -62,12 +59,10 @@ function increaseTodaySubmitCount() {
 
 function showTodayReminder() {
   const count = getTodaySubmitCount();
-
-  if (count >= 1) {
-    helperBox.textContent = "今天已经记录过啦，心情有变化，都要告诉爸爸哦！";
-  } else {
-    helperBox.textContent = "你不需要写得很完整，只要把今天的感觉留下来就已经很好了。";
-  }
+  helperBox.textContent =
+    count >= 1
+      ? "今天已经记录过啦，心情有变化，都要告诉爸爸哦！"
+      : "你不需要写得很完整，只要把今天的感觉留下来就已经很好了。";
 }
 
 function updateSomaticField() {
@@ -95,8 +90,9 @@ function switchTab(tabName) {
 }
 
 async function loadTodaySupplements() {
-  todayList.textContent = "正在读取今天的补给记录…";
+  if (!todayList) return;
 
+  todayList.textContent = "正在读取今天的补给记录…";
   const today = getTodayString();
 
   const { data, error } = await supabaseClient
@@ -134,15 +130,11 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const todayCount = getTodaySubmitCount();
-
   if (todayCount >= 1) {
     const confirmed = window.confirm(
       "今天已经记录过啦。\n宝贝看来今天有很多故事呢，还想继续跟我说吗？"
     );
-
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
   }
 
   successMessage.classList.add("hidden");
@@ -160,9 +152,7 @@ form.addEventListener("submit", async (e) => {
     note: document.getElementById("note").value.trim()
   };
 
-  const { error } = await supabaseClient
-    .from("emotion_entries")
-    .insert([payload]);
+  const { error } = await supabaseClient.from("emotion_entries").insert([payload]);
 
   if (error) {
     console.error("提交失败：", error);
@@ -173,7 +163,6 @@ form.addEventListener("submit", async (e) => {
   }
 
   increaseTodaySubmitCount();
-
   form.reset();
   updateSomaticField();
   showTodayReminder();
@@ -186,81 +175,81 @@ form.addEventListener("submit", async (e) => {
   submitBtn.textContent = "提交今天的记录";
 });
 
-supplementForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
+if (supplementForm) {
+  supplementForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  supplementSuccessMessage.classList.add("hidden");
-  supplementErrorMessage.classList.add("hidden");
-  supplementSubmitBtn.disabled = true;
-  supplementSubmitBtn.textContent = "正在提交…";
+    supplementSuccessMessage.classList.add("hidden");
+    supplementErrorMessage.classList.add("hidden");
+    supplementSubmitBtn.disabled = true;
+    supplementSubmitBtn.textContent = "正在提交…";
 
-  const checkedSupplements = Array.from(
-    supplementForm.querySelectorAll('input[name="supplement"]:checked')
-  ).map((item) => item.value);
+    const checkedSupplements = Array.from(
+      supplementForm.querySelectorAll('input[name="supplement"]:checked')
+    ).map((item) => item.value);
 
-  if (checkedSupplements.length === 0) {
-    supplementErrorMessage.textContent = "请先勾选今天吃过的补给哦。";
-    supplementErrorMessage.classList.remove("hidden");
-    supplementSubmitBtn.disabled = false;
-    supplementSubmitBtn.textContent = "提交今日补给";
-    return;
-  }
+    if (checkedSupplements.length === 0) {
+      supplementErrorMessage.textContent = "请先勾选今天吃过的补给哦。";
+      supplementErrorMessage.classList.remove("hidden");
+      supplementSubmitBtn.disabled = false;
+      supplementSubmitBtn.textContent = "提交今日补给";
+      return;
+    }
 
-  const today = getTodayString();
+    const today = getTodayString();
 
-  const { data: existingRows, error: readError } = await supabaseClient
-    .from("supplement_entries")
-    .select("supplement")
-    .eq("local_date", today);
+    const { data: existingRows, error: readError } = await supabaseClient
+      .from("supplement_entries")
+      .select("supplement")
+      .eq("local_date", today);
 
-  if (readError) {
-    console.error("读取已有补给失败：", readError);
-    supplementErrorMessage.textContent = "读取记录失败了，请稍后再试一次。";
-    supplementErrorMessage.classList.remove("hidden");
-    supplementSubmitBtn.disabled = false;
-    supplementSubmitBtn.textContent = "提交今日补给";
-    return;
-  }
+    if (readError) {
+      console.error("读取已有补给失败：", readError);
+      supplementErrorMessage.textContent = "读取记录失败了，请稍后再试一次。";
+      supplementErrorMessage.classList.remove("hidden");
+      supplementSubmitBtn.disabled = false;
+      supplementSubmitBtn.textContent = "提交今日补给";
+      return;
+    }
 
-  const existingSet = new Set((existingRows || []).map((item) => item.supplement));
-  const newSupplements = checkedSupplements.filter((name) => !existingSet.has(name));
+    const existingSet = new Set((existingRows || []).map((item) => item.supplement));
+    const newSupplements = checkedSupplements.filter((name) => !existingSet.has(name));
 
-  if (newSupplements.length === 0) {
-    supplementErrorMessage.textContent = "这些补给今天已经记过啦，不用重复提交哦。";
-    supplementErrorMessage.classList.remove("hidden");
+    if (newSupplements.length === 0) {
+      supplementErrorMessage.textContent = "这些补给今天已经记过啦，不用重复提交哦。";
+      supplementErrorMessage.classList.remove("hidden");
+      supplementForm.reset();
+      await loadTodaySupplements();
+      supplementSubmitBtn.disabled = false;
+      supplementSubmitBtn.textContent = "提交今日补给";
+      return;
+    }
+
+    const payload = newSupplements.map((name) => ({
+      local_date: today,
+      supplement: name
+    }));
+
+    const { error } = await supabaseClient.from("supplement_entries").insert(payload);
+
+    if (error) {
+      console.error("补给提交失败：", error);
+      supplementErrorMessage.textContent = "补给提交失败了，请稍后再试一次。";
+      supplementErrorMessage.classList.remove("hidden");
+      supplementSubmitBtn.disabled = false;
+      supplementSubmitBtn.textContent = "提交今日补给";
+      return;
+    }
+
     supplementForm.reset();
+    supplementSuccessMessage.textContent = "今天的补给已经记下来啦。";
+    supplementSuccessMessage.classList.remove("hidden");
+
     await loadTodaySupplements();
+
     supplementSubmitBtn.disabled = false;
     supplementSubmitBtn.textContent = "提交今日补给";
-    return;
-  }
-
-  const payload = newSupplements.map((name) => ({
-    local_date: today,
-    supplement: name
-  }));
-
-  const { error } = await supabaseClient
-    .from("supplement_entries")
-    .insert(payload);
-
-  if (error) {
-    console.error("补给提交失败：", error);
-    supplementErrorMessage.textContent = "补给提交失败了，请稍后再试一次。";
-    supplementErrorMessage.classList.remove("hidden");
-    supplementSubmitBtn.disabled = false;
-    supplementSubmitBtn.textContent = "提交今日补给";
-    return;
-  }
-
-  supplementForm.reset();
-  supplementSuccessMessage.textContent = "今天的补给已经记下来啦。";
-  supplementSuccessMessage.classList.remove("hidden");
-
-  await loadTodaySupplements();
-
-  supplementSubmitBtn.disabled = false;
-  supplementSubmitBtn.textContent = "提交今日补给";
-});
+  });
+}
 
 switchTab("mood");
