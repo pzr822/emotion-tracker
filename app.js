@@ -10,6 +10,11 @@ const errorMessage = document.getElementById("errorMessage");
 const submitBtn = document.getElementById("submitBtn");
 const heroImage = document.getElementById("heroImage");
 const subtitle = document.getElementById("subtitle");
+
+const START_IMAGE = "assets/start.png";
+const MOOD_SUCCESS_IMAGE = "assets/success.png";
+const SUPPLEMENT_SUCCESS_IMAGE = "assets/supplement-success.png";
+
 const helperBox = document.getElementById("helperBox");
 const somaticPresentSelect = document.getElementById("somatic_present");
 const somaticNoteField = document.getElementById("somaticNoteField");
@@ -167,7 +172,7 @@ form.addEventListener("submit", async (e) => {
   updateSomaticField();
   showTodayReminder();
 
-  heroImage.src = "assets/success.png";
+  heroImage.src = MOOD_SUCCESS_IMAGE;
   subtitle.textContent = "宝贝今天也很努力呢！爸爸永远在你身边~";
   successMessage.classList.remove("hidden");
 
@@ -244,6 +249,8 @@ if (supplementForm) {
     supplementForm.reset();
     supplementSuccessMessage.textContent = "今天的补剂已经记下来啦。";
     supplementSuccessMessage.classList.remove("hidden");
+    heroImage.src = SUPPLEMENT_SUCCESS_IMAGE;
+    subtitle.textContent = "今天的补给爸爸也记住啦，宝贝真棒~";
 
     await loadTodaySupplements();
 
