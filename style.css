@@ -171,26 +171,11 @@ button:disabled {
   display: none;
 }
 
-@media (max-width: 480px) {
-  .card {
-    padding: 20px 16px;
-    border-radius: 24px;
-  }
-
-  .header h1 {
-    font-size: 26px;
-  }
-
-  .hero img {
-    max-width: 220px;
-  }
-}
 .tabs {
   display: flex;
   gap: 10px;
   margin-bottom: 18px;
 }
-
 .tab-btn {
   flex: 1;
   width: auto;
@@ -239,4 +224,19 @@ button:disabled {
 .checkbox-group input[type="checkbox"] {
   width: 16px;
   height: 16px;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .hero img {
+    max-width: 220px;
+  }
 }
