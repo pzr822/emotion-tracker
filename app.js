@@ -102,7 +102,7 @@ async function loadTodaySupplements() {
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("读取补给失败：", error);
+    console.error("读取补剂失败：", error);
     todayList.textContent = "读取失败了，请稍后再试一次。";
     return;
   }
@@ -216,7 +216,7 @@ if (supplementForm) {
     const newSupplements = checkedSupplements.filter((name) => !existingSet.has(name));
 
     if (newSupplements.length === 0) {
-      supplementErrorMessage.textContent = "这些补给今天已经记过啦，不用重复提交哦。";
+      supplementErrorMessage.textContent = "这些补剂今天已经记过啦，不要吃多了打标枪哦。";
       supplementErrorMessage.classList.remove("hidden");
       supplementForm.reset();
       await loadTodaySupplements();
