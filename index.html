@@ -1,123 +1,119 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>今天的心情记录</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <main class="page">
-    <section class="card">
-      <div class="header">
-        <h1>靓靓冉冉的心情晴雨表</h1>
-        <p class="subtitle" id="subtitle">
-          请慢慢地把心情告诉爸爸吧
-        </p>
+<div class="tabs">
+  <button type="button" class="tab-btn active" data-tab="moodTab">心情晴雨表</button>
+  <button type="button" class="tab-btn" data-tab="supplementTab">今日补给</button>
+</div>
+
+<div id="moodTab" class="tab-panel active">
+  <form id="moodForm" class="form">
+    <div class="field">
+      <label for="mood_score">今天的心情评分</label>
+      <select id="mood_score" required>
+        <option value="">请选择 0-5 分</option>
+        <option value="0">0 分</option>
+        <option value="1">1 分</option>
+        <option value="2">2 分</option>
+        <option value="3">3 分</option>
+        <option value="4">4 分</option>
+        <option value="5">5 分</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="sleep_score">昨晚睡眠评分</label>
+      <select id="sleep_score" required>
+        <option value="">请选择 0-5 分</option>
+        <option value="0">0 分</option>
+        <option value="1">1 分</option>
+        <option value="2">2 分</option>
+        <option value="3">3 分</option>
+        <option value="4">4 分</option>
+        <option value="5">5 分</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="anxiety_score">焦虑评分</label>
+      <select id="anxiety_score" required>
+        <option value="">请选择 0-5 分</option>
+        <option value="0">0 分</option>
+        <option value="1">1 分</option>
+        <option value="2">2 分</option>
+        <option value="3">3 分</option>
+        <option value="4">4 分</option>
+        <option value="5">5 分</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="depression_score">抑郁评分</label>
+      <select id="depression_score" required>
+        <option value="">请选择 0-5 分</option>
+        <option value="0">0 分</option>
+        <option value="1">1 分</option>
+        <option value="2">2 分</option>
+        <option value="3">3 分</option>
+        <option value="4">4 分</option>
+        <option value="5">5 分</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="somatic_present">今天有没有身体上不舒服呀（包括躯体化）？</label>
+      <select id="somatic_present" required>
+        <option value="">请选择</option>
+        <option value="有">有</option>
+        <option value="没有">没有</option>
+      </select>
+    </div>
+
+    <div class="field" id="somaticNoteField">
+      <label for="somatic_note">身体不得劲儿备注</label>
+      <textarea
+        id="somatic_note"
+        rows="4"
+        placeholder="例如：胸闷、头痛、胃不舒服、心跳快……"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label for="note">有没有什么悄悄话想跟爸爸说？</label>
+      <textarea
+        id="note"
+        rows="4"
+        placeholder="可以写一点今天发生的事，也可以什么都不写。"
+      ></textarea>
+    </div>
+
+    <div class="helper-box" id="helperBox">
+      宝宝不需要说的很多呢，只要把今天的感觉慢慢说给爸爸听。
+    </div>
+
+    <button type="submit" id="submitBtn">提交今天的记录</button>
+  </form>
+</div>
+
+<div id="supplementTab" class="tab-panel">
+  <form id="supplementForm" class="form">
+    <div class="field">
+      <label>今天已经吃过</label>
+      <div id="todaySupplements" class="helper-box">
+        正在读取今天的补给记录…
       </div>
+    </div>
 
-      <div class="hero">
-        <img id="heroImage" src="assets/start.png" alt="温柔插图" />
+    <div class="field">
+      <label>今天这次吃了哪些补给？</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="supplement" value="鱼油"> 鱼油</label>
+        <label><input type="checkbox" name="supplement" value="镁"> 镁</label>
+        <label><input type="checkbox" name="supplement" value="多种维生素"> 多种维生素</label>
       </div>
+    </div>
 
-      <form id="moodForm" class="form">
-        <div class="field">
-          <label for="mood_score">今天的心情评分</label>
-          <select id="mood_score" required>
-            <option value="">请选择 0-5 分</option>
-            <option value="0">0 分</option>
-            <option value="1">1 分</option>
-            <option value="2">2 分</option>
-            <option value="3">3 分</option>
-            <option value="4">4 分</option>
-            <option value="5">5 分</option>
-          </select>
-        </div>
+    <div class="helper-box">
+      已经吃过的补给会显示在上面，避免重复吃哦。
+    </div>
 
-        <div class="field">
-          <label for="sleep_score">昨晚睡眠评分</label>
-          <select id="sleep_score" required>
-            <option value="">请选择 0-5 分</option>
-            <option value="0">0 分</option>
-            <option value="1">1 分</option>
-            <option value="2">2 分</option>
-            <option value="3">3 分</option>
-            <option value="4">4 分</option>
-            <option value="5">5 分</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="anxiety_score">焦虑评分</label>
-          <select id="anxiety_score" required>
-            <option value="">请选择 0-5 分</option>
-            <option value="0">0 分</option>
-            <option value="1">1 分</option>
-            <option value="2">2 分</option>
-            <option value="3">3 分</option>
-            <option value="4">4 分</option>
-            <option value="5">5 分</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="depression_score">抑郁评分</label>
-          <select id="depression_score" required>
-            <option value="">请选择 0-5 分</option>
-            <option value="0">0 分</option>
-            <option value="1">1 分</option>
-            <option value="2">2 分</option>
-            <option value="3">3 分</option>
-            <option value="4">4 分</option>
-            <option value="5">5 分</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="somatic_present">今天有没有身体上不舒服呀（包括躯体化）？</label>
-          <select id="somatic_present" required>
-            <option value="">请选择</option>
-            <option value="有">有</option>
-            <option value="没有">没有</option>
-          </select>
-        </div>
-
-        <div class="field" id="somaticNoteField">
-          <label for="somatic_note">身体不得劲儿备注</label>
-          <textarea
-            id="somatic_note"
-            rows="4"
-            placeholder="例如：胸闷、头痛、胃不舒服、心跳快……"
-          ></textarea>
-        </div>
-
-        <div class="field">
-          <label for="note">有没有什么悄悄话想跟爸爸说？</label>
-          <textarea
-            id="note"
-            rows="4"
-            placeholder="可以写一点今天发生的事，也可以什么都不写。"
-          ></textarea>
-        </div>
-
-        <div class="helper-box" id="helperBox">
-          宝宝不需要说的很多呢，只要把今天的感觉慢慢说给爸爸听。
-        </div>
-
-        <button type="submit" id="submitBtn">提交今天的记录</button>
-      </form>
-
-      <div id="successMessage" class="message success hidden">
-        你的情绪爸爸已经吃到肚子里啦~谢谢你今天跟爸爸说了这些！
-      </div>
-
-      <div id="errorMessage" class="message error hidden">
-        提交失败了，请稍后再试一次。
-      </div>
-    </section>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
-</body>
-</html>
+    <button type="submit" id="supplementSubmitBtn">提交今日补给</button>
+  </form>
+</div>
