@@ -92,7 +92,7 @@ function switchTab(tabName) {
 async function loadTodaySupplements() {
   if (!todayList) return;
 
-  todayList.textContent = "正在读取今天的补给记录…";
+  todayList.textContent = "正在读取今天的补剂记录…";
   const today = getTodayString();
 
   const { data, error } = await supabaseClient
