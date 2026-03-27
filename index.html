@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>今天的心情记录</title>
+  <title>今天的点点滴滴</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,7 +12,7 @@
       <div class="header">
         <div class="tabs">
           <button type="button" class="tab-btn active" data-tab="mood">心情晴雨表</button>
-          <button type="button" class="tab-btn" data-tab="supplement">今日补给</button>
+          <button type="button" class="tab-btn" data-tab="supplement">今日补剂</button>
         </div>
 
         <h1>靓靓冉冉的小狗日记</h1>
@@ -125,7 +125,7 @@
       <section id="supplementPanel" class="tab-panel hidden">
         <div class="supplement-card">
           <div class="supplement-title">今天已经吃过</div>
-          <div id="todayList" class="today-list">正在读取今天的补给记录…</div>
+          <div id="todayList" class="today-list">正在读取今天的补剂记录…</div>
         </div>
 
         <form id="supplementForm" class="form supplement-form">
@@ -152,14 +152,14 @@
           </div>
 
           <div class="helper-box">
-            已经吃过的补给会显示在上面，避免重复吃哦。
+            已经吃过的补剂会显示在上面，避免重复吃哦。
           </div>
 
-          <button type="submit" id="supplementSubmitBtn">提交今日补给</button>
+          <button type="submit" id="supplementSubmitBtn">提交今日补剂</button>
         </form>
 
         <div id="supplementSuccessMessage" class="message success hidden">
-          今天的补给已经记下来啦。
+          今天的补剂已经记下来啦，又是健康的一天！
         </div>
 
         <div id="supplementErrorMessage" class="message error hidden">
