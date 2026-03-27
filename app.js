@@ -108,7 +108,7 @@ async function loadTodaySupplements() {
   }
 
   if (!data || data.length === 0) {
-    todayList.textContent = "今天还没有记录补给哦。";
+    todayList.textContent = "今天还没有记录补剂哦。";
     return;
   }
 
@@ -189,10 +189,10 @@ if (supplementForm) {
     ).map((item) => item.value);
 
     if (checkedSupplements.length === 0) {
-      supplementErrorMessage.textContent = "请先勾选今天吃过的补给哦。";
+      supplementErrorMessage.textContent = "请先勾选今天吃过的补剂哦。";
       supplementErrorMessage.classList.remove("hidden");
       supplementSubmitBtn.disabled = false;
-      supplementSubmitBtn.textContent = "提交今日补给";
+      supplementSubmitBtn.textContent = "提交今日补剂";
       return;
     }
 
@@ -204,11 +204,11 @@ if (supplementForm) {
       .eq("local_date", today);
 
     if (readError) {
-      console.error("读取已有补给失败：", readError);
+      console.error("读取已有补剂失败：", readError);
       supplementErrorMessage.textContent = "读取记录失败了，请稍后再试一次。";
       supplementErrorMessage.classList.remove("hidden");
       supplementSubmitBtn.disabled = false;
-      supplementSubmitBtn.textContent = "提交今日补给";
+      supplementSubmitBtn.textContent = "提交今日补剂";
       return;
     }
 
@@ -221,7 +221,7 @@ if (supplementForm) {
       supplementForm.reset();
       await loadTodaySupplements();
       supplementSubmitBtn.disabled = false;
-      supplementSubmitBtn.textContent = "提交今日补给";
+      supplementSubmitBtn.textContent = "提交今日补剂";
       return;
     }
 
@@ -233,22 +233,22 @@ if (supplementForm) {
     const { error } = await supabaseClient.from("supplement_entries").insert(payload);
 
     if (error) {
-      console.error("补给提交失败：", error);
-      supplementErrorMessage.textContent = "补给提交失败了，请稍后再试一次。";
+      console.error("补剂提交失败：", error);
+      supplementErrorMessage.textContent = "补剂提交失败了，请稍后再试一次。";
       supplementErrorMessage.classList.remove("hidden");
       supplementSubmitBtn.disabled = false;
-      supplementSubmitBtn.textContent = "提交今日补给";
+      supplementSubmitBtn.textContent = "提交今日补剂";
       return;
     }
 
     supplementForm.reset();
-    supplementSuccessMessage.textContent = "今天的补给已经记下来啦。";
+    supplementSuccessMessage.textContent = "今天的补剂已经记下来啦。";
     supplementSuccessMessage.classList.remove("hidden");
 
     await loadTodaySupplements();
 
     supplementSubmitBtn.disabled = false;
-    supplementSubmitBtn.textContent = "提交今日补给";
+    supplementSubmitBtn.textContent = "提交今日补剂";
   });
 }
 
