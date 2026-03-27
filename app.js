@@ -3,6 +3,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_ZyNfyZeTnuknsNDyPcO-OQ_wMj6nsge";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ===== mood =====
 const form = document.getElementById("moodForm");
 const successMessage = document.getElementById("successMessage");
 const errorMessage = document.getElementById("errorMessage");
@@ -13,6 +14,18 @@ const helperBox = document.getElementById("helperBox");
 const somaticPresentSelect = document.getElementById("somatic_present");
 const somaticNoteField = document.getElementById("somaticNoteField");
 const somaticNote = document.getElementById("somatic_note");
+
+// ===== supplement =====
+const supplementForm = document.getElementById("supplementForm");
+const supplementSubmitBtn = document.getElementById("supplementSubmitBtn");
+const supplementSuccessMessage = document.getElementById("supplementSuccessMessage");
+const supplementErrorMessage = document.getElementById("supplementErrorMessage");
+const todayList = document.getElementById("todayList");
+
+// ===== tabs =====
+const tabButtons = document.querySelectorAll(".tab-btn");
+const moodPanel = document.getElementById("moodPanel");
+const supplementPanel = document.getElementById("supplementPanel");
 
 const LAST_SUBMIT_DATE_KEY = "emotion_tracker_last_submit_date";
 const TODAY_SUBMIT_COUNT_KEY = "emotion_tracker_today_submit_count";
@@ -51,20 +64,67 @@ function showTodayReminder() {
   const count = getTodaySubmitCount();
 
   if (count >= 1) {
-    helperBox.textContent = `今天已经记录过啦，心情有变化，都要告诉爸爸哦！`;
+    helperBox.textContent = "今天已经记录过啦，心情有变化，都要告诉爸爸哦！";
   } else {
     helperBox.textContent = "你不需要写得很完整，只要把今天的感觉留下来就已经很好了。";
   }
 }
 
 function updateSomaticField() {
-  if (somaticPresentSelect.value === "没有") {
+  if (somaticPresentSelect.value === "有") {
+    somaticNoteField.classList.remove("hidden");
+  } else {
     somaticNoteField.classList.add("hidden");
     somaticNote.value = "";
-  } else {
-    somaticNoteField.classList.remove("hidden");
   }
 }
+
+function switchTab(tabName) {
+  tabButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.tab === tabName);
+  });
+
+  if (tabName === "mood") {
+    moodPanel.classList.remove("hidden");
+    supplementPanel.classList.add("hidden");
+  } else {
+    supplementPanel.classList.remove("hidden");
+    moodPanel.classList.add("hidden");
+    loadTodaySupplements();
+  }
+}
+
+async function loadTodaySupplements() {
+  todayList.textContent = "正在读取今天的补给记录…";
+
+  const today = getTodayString();
+
+  const { data, error } = await supabaseClient
+    .from("supplement_entries")
+    .select("supplement")
+    .eq("local_date", today)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("读取补给失败：", error);
+    todayList.textContent = "读取失败了，请稍后再试一次。";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    todayList.textContent = "今天还没有记录补给哦。";
+    return;
+  }
+
+  const uniqueSupplements = [...new Set(data.map((item) => item.supplement))];
+  todayList.textContent = uniqueSupplements.join("、");
+}
+
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    switchTab(button.dataset.tab);
+  });
+});
 
 somaticPresentSelect.addEventListener("change", updateSomaticField);
 updateSomaticField();
@@ -77,7 +137,7 @@ form.addEventListener("submit", async (e) => {
 
   if (todayCount >= 1) {
     const confirmed = window.confirm(
-      `今天已经记录过啦。\n宝贝看来今天有很多故事呢，还想继续跟我说吗？`
+      "今天已经记录过啦。\n宝贝看来今天有很多故事呢，还想继续跟我说吗？"
     );
 
     if (!confirmed) {
@@ -125,3 +185,82 @@ form.addEventListener("submit", async (e) => {
   submitBtn.disabled = false;
   submitBtn.textContent = "提交今天的记录";
 });
+
+supplementForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  supplementSuccessMessage.classList.add("hidden");
+  supplementErrorMessage.classList.add("hidden");
+  supplementSubmitBtn.disabled = true;
+  supplementSubmitBtn.textContent = "正在提交…";
+
+  const checkedSupplements = Array.from(
+    supplementForm.querySelectorAll('input[name="supplement"]:checked')
+  ).map((item) => item.value);
+
+  if (checkedSupplements.length === 0) {
+    supplementErrorMessage.textContent = "请先勾选今天吃过的补给哦。";
+    supplementErrorMessage.classList.remove("hidden");
+    supplementSubmitBtn.disabled = false;
+    supplementSubmitBtn.textContent = "提交今日补给";
+    return;
+  }
+
+  const today = getTodayString();
+
+  const { data: existingRows, error: readError } = await supabaseClient
+    .from("supplement_entries")
+    .select("supplement")
+    .eq("local_date", today);
+
+  if (readError) {
+    console.error("读取已有补给失败：", readError);
+    supplementErrorMessage.textContent = "读取记录失败了，请稍后再试一次。";
+    supplementErrorMessage.classList.remove("hidden");
+    supplementSubmitBtn.disabled = false;
+    supplementSubmitBtn.textContent = "提交今日补给";
+    return;
+  }
+
+  const existingSet = new Set((existingRows || []).map((item) => item.supplement));
+  const newSupplements = checkedSupplements.filter((name) => !existingSet.has(name));
+
+  if (newSupplements.length === 0) {
+    supplementErrorMessage.textContent = "这些补给今天已经记过啦，不用重复提交哦。";
+    supplementErrorMessage.classList.remove("hidden");
+    supplementForm.reset();
+    await loadTodaySupplements();
+    supplementSubmitBtn.disabled = false;
+    supplementSubmitBtn.textContent = "提交今日补给";
+    return;
+  }
+
+  const payload = newSupplements.map((name) => ({
+    local_date: today,
+    supplement: name
+  }));
+
+  const { error } = await supabaseClient
+    .from("supplement_entries")
+    .insert(payload);
+
+  if (error) {
+    console.error("补给提交失败：", error);
+    supplementErrorMessage.textContent = "补给提交失败了，请稍后再试一次。";
+    supplementErrorMessage.classList.remove("hidden");
+    supplementSubmitBtn.disabled = false;
+    supplementSubmitBtn.textContent = "提交今日补给";
+    return;
+  }
+
+  supplementForm.reset();
+  supplementSuccessMessage.textContent = "今天的补给已经记下来啦。";
+  supplementSuccessMessage.classList.remove("hidden");
+
+  await loadTodaySupplements();
+
+  supplementSubmitBtn.disabled = false;
+  supplementSubmitBtn.textContent = "提交今日补给";
+});
+
+switchTab("mood");
