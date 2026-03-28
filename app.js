@@ -153,6 +153,7 @@ form.addEventListener("submit", async (e) => {
     anxiety_score: Number(document.getElementById("anxiety_score").value),
     depression_score: Number(document.getElementById("depression_score").value),
     somatic_present: document.getElementById("somatic_present").value,
+    wake_present: document.getElementById("wake_present").value,
     somatic_note: document.getElementById("somatic_note").value.trim(),
     note: document.getElementById("note").value.trim()
   };
