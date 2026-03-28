@@ -6,6 +6,7 @@ create table if not exists public.emotion_entries (
   anxiety_score int not null check (anxiety_score between 1 and 5),
   depression_score int not null check (depression_score between 1 and 5),
   somatic_present text not null check (somatic_present in ('有', '没有')),
+  wake_present text not null check (wake_present in ('有', '没有')),
   somatic_note text,
   note text
 );
